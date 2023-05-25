@@ -5,7 +5,12 @@
 	<script defer src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	<script defer src="/javascripts/commscript.js"></script>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
-
+	
+	<style>
+		.favorite-icon {
+			cursor: pointer;
+		}
+	</style>
 
 	<div class="container mt-4" id="table-container">
 		<h2 id="current-readings">Last Measure</h2>
@@ -32,17 +37,16 @@
 							</td>
 						</tr>
 					{% endfor %}
-				</tr>
-			{% else %}
-				<tr>
-					<td colspan="4">No data available</td>
-				</tr>
-			{% endif %}
+				{% else %}
+					<tr>
+						<td colspan="4">No data available</td>
+					</tr>
+				{% endif %}
 
+			</tbody>
+		</table>
 
-		</tbody>
-	</table>
+		<button type="button" class="btn btn-danger" id="reset-button">Reset</button>
 
-	<button type="button" class="btn btn-danger" id="reset-button">Reset</button>
-
-</div>{% endblock %}
+	</div>
+{% endblock %}

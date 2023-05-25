@@ -55,15 +55,24 @@ router.post('/api/reset', function (req, res) {
 router.get('/api/data', function (req, res) {
   // Query to retrieve the currentSequence value from the currentSequence table
   connection.query('SELECT idSequence FROM currentSequence', function (err, rows) {
-    if (err) throw err;
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Failed to retrieve currentSequence value' });
+      return;
+    }
 
     if (rows.length > 0) {
-      let currentSequence = rows[0].idSequence;
+      const currentSequence = rows[0].idSequence;
 
       // Query to retrieve the latest measure with the specified currentSequence
-      connection.query('SELECT idMeasures, length, DATE_FORMAT(DATE_ADD(time, INTERVAL 2 HOUR), "%d/%m/%Y %H:%i:%s") AS time, idSequence FROM measures WHERE idSequence = ? ORDER BY idMeasures DESC LIMIT 1', [currentSequence], function (err, rows) {
-        if (err) throw err;
-        res.send(rows); // Send the data in response
+      const query = 'SELECT idMeasures, length, DATE_FORMAT(DATE_ADD(time, INTERVAL 2 HOUR), "%d/%m/%Y %H:%i:%s") AS time, idSequence FROM measures WHERE idSequence = ? ORDER BY idMeasures DESC LIMIT 1';
+      connection.query(query, [currentSequence], function (err, rows) {
+        if (err) {
+          console.error(err);
+          res.status(500).json({ error: 'Failed to retrieve measures data' });
+        } else {
+          res.send(rows);
+        }
       });
     } else {
       res.send([]); // Send an empty response if no currentSequence is found
